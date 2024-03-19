@@ -1,6 +1,3 @@
-
-extract_folder = 'D:\Praca_magisterska\scripts\images'
-zip_file = 'D:\Praca_magisterska\scripts\satellite_imagery_archives'
 import os
 import zipfile
 import uuid
@@ -17,7 +14,6 @@ def extract_archives(zip_files_dir: str, extract_folder: str):
         for root, dirs, files in os.walk(extract_folder):
             for dir in dirs:
                 id = dir[-4:]
-                print(f"{'-' * 50}{id}{'-' * 100}")
                 path_to_dir = os.path.join(root, dir)
                 for file in os.listdir(os.path.join(root, dir)):
                     filename, file_extension = os.path.splitext(file)
