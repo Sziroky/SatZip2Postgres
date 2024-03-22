@@ -7,6 +7,7 @@ import rasterio
 
 def extract_info_from_optic(optic_imagery_folder: str, output_dir: str):
     optic_imagery_info = []
+    queries = []
     for root, dirs, files in os.walk(optic_imagery_folder):
         for file in files:
             if 'Sentinel-2' in file:
@@ -52,23 +53,31 @@ def extract_info_from_optic(optic_imagery_folder: str, output_dir: str):
                     top = bbox[80:94].replace(',', '').replace(')', '')
 
                     wkt = f"POLYGON(({left} {bottom}, {right} {bottom}, {right} {top}, {left} {top}, {left} {bottom}))"
-                    print(left)
 
+                    raster_data = src.read()
 
+                    glacier = 'unknown'
                 # Arrange information into directory
                 info_per_file = {'scene_id': image_id,
                                  'satellite': satellite,
                                  'acquisition_date': acquisition_date,
                                  'level': product_level,
                                  'band': band,
-                                 'epsg':epsg,
-                                 'spatial_resolution':spt_res,
-                                 'bbox':wkt,
+                                 'epsg': epsg,
+                                 'spatial_resolution': spt_res,
+                                 'bbox': wkt,
                                  'im_height': im_height,
                                  'im_width': im_width,
-                                 'path': path}
+                                 'path': path,
+                                 'glacier': glacier
+                                 }
+
+
+                query = f"INSERT INTO optic_unsorted (scene_id, satellite, acquisition_date, product_level, band, epsg, spatial_resolution_m, bbox, im_height, im_width, image, path_to_img, glacier) VALUES ('{image_id}', '{satellite}', '{acquisition_date}', '{product_level}', '{band}', {epsg}, {spt_res}, ST_GeomFromText('{wkt}', {epsg}), {im_height}, {im_width}, ST_FromGDALRaster(pg_read_binary_file('{path}')), '{path}', '{glacier}');"
 
                 optic_imagery_info.append(info_per_file)
+                queries.append((query))
+
         df = pd.DataFrame(optic_imagery_info)
         csv_file = df.to_csv(f'{output_dir}\optic.csv',index=False)
-        return csv_file
+        return queries
