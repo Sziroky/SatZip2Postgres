@@ -83,7 +83,8 @@ def extract_info_from_sar(sar_imagery_folder: str, output_dir: str):
                                  'bbox': wkt,
                                  'im_height': im_height,
                                  'im_width': im_width,
-                                 'path': path}
+                                 'path': path,
+                                 'glacier':'unknown'}
 
                 sar_imagery_info.append(info_per_file)
         df = pd.DataFrame(sar_imagery_info)
