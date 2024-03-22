@@ -3,3 +3,5 @@
 /output/*.*
 /satellite_imagery_archives/*.*
 __pycache__/*.pyc
+/conf.ini
+
