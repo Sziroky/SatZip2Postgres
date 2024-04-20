@@ -7,6 +7,8 @@ import rasterio
 
 def extract_info_from_sar(sar_imagery_folder: str, output_dir: str):
     sar_imagery_info = []
+    queries = []
+    raster_files = []
     for root, dirs, files in os.walk(sar_imagery_folder):
         for file in files:
             if 'Sentinel-1' in file:
@@ -68,7 +70,7 @@ def extract_info_from_sar(sar_imagery_folder: str, output_dir: str):
                     top = bbox[80:94].replace(',', '').replace(')', '')
 
                     wkt = f"POLYGON(({left} {bottom}, {right} {bottom}, {right} {top}, {left} {top}, {left} {bottom}))"
-
+                    raster_data = src.read()
                 # Arrange information into directory
                 info_per_file = {'scene_id': image_id,
                                  'satellite': satellite,
@@ -86,7 +88,14 @@ def extract_info_from_sar(sar_imagery_folder: str, output_dir: str):
                                  'path': path,
                                  'glacier':'unknown'}
 
+                query = (f"INSERT INTO SENTINEL_01_INFO(scene_id, ACQUISITION_DATE, POLARIZATION, UNIT, CORRECTION_TYPE, SPATIAL_RESOLUTION, EPSG) VALUES('{image_id}','{acquisition_date}','{polarization}','{unit}','{correction_type}',{spt_res},{epsg});"
+                         f"INSERT INTO SENTINEL_01_RASTER(SCENE_ID, CODE, RASTER_PATH) VALUES('{image_id}','{code}','{path}');"
+                         f"INSERT INTO SENTINEL_01_IMAGES(SCENE_ID, IMG_HEIGHT,IMG_WIDTH, IMG_PATH) VALUES ('{image_id}',{im_height},{im_width},'{path}');"
+                         f"INSERT INTO SENTINEL_01_GEOMETRY(SCENE_ID,EPSG ,BBOX) VALUES('{image_id}',{epsg},ST_GeometryFromText('{wkt}'))")
+
                 sar_imagery_info.append(info_per_file)
+                queries.append(query)
+                raster_files.append(path)
         df = pd.DataFrame(sar_imagery_info)
-        csv_file = df.to_csv(f'{output_dir}\sar.csv',index=False)
-        return csv_file
+        df.to_csv(f'{output_dir}\sar.csv',index=False)
+        return queries, raster_files

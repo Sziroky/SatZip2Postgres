@@ -8,11 +8,12 @@ import rasterio
 def extract_info_from_optic(optic_imagery_folder: str, output_dir: str):
     optic_imagery_info = []
     queries = []
+    raster_files = []
     for root, dirs, files in os.walk(optic_imagery_folder):
         for file in files:
             if 'Sentinel-2' in file:
                 print(f"Sentinel-2: started extracting information from {file}\n{'-' * 100}")
-                path = os.path.join(root, file)
+                path = os.path.join(root, file).replace('\\','/')
 
                 # retrieving information from file name:
                 acquisition_date = file[:10]
@@ -72,12 +73,16 @@ def extract_info_from_optic(optic_imagery_folder: str, output_dir: str):
                                  'glacier': glacier
                                  }
 
-
-                query = f"INSERT INTO optic_unsorted (scene_id, satellite, acquisition_date, product_level, band, epsg, spatial_resolution_m, bbox, im_height, im_width, image, path_to_img, glacier) VALUES ('{image_id}', '{satellite}', '{acquisition_date}', '{product_level}', '{band}', {epsg}, {spt_res}, ST_GeomFromText('{wkt}', {epsg}), {im_height}, {im_width}, ST_FromGDALRaster(pg_read_binary_file('{path}')), '{path}', '{glacier}');"
+                query = (
+                    f"INSERT INTO SENTINEL_02_INFO(scene_id, ACQUISITION_DATE, LEVEL, SPATIAL_RES, EPSG) VALUES('{image_id}','{acquisition_date}','{product_level}',{spt_res},{epsg});"
+                    f"INSERT INTO SENTINEL_02_RASTER(SCENE_ID, BAND, RASTER_PATH, SCENE ) VALUES('{image_id}','{band}','{path}',{raster_data});"
+                    f"INSERT INTO SENTINEL_02_IMAGES(SCENE_ID, IMG_HEIGHT, IMG_WIDTH, IMG_PATH) VALUES ('{image_id}',{im_height},{im_width},'{path}');"
+                    f"INSERT INTO SENTINEL_02_GEOMETRY(SCENE_ID, EPSG, BBOX) VALUES('{image_id}',{epsg},ST_GeometryFromText('{wkt}'))")
 
                 optic_imagery_info.append(info_per_file)
-                queries.append((query))
+                queries.append(query)
+                raster_files.append(path)
 
         df = pd.DataFrame(optic_imagery_info)
-        csv_file = df.to_csv(f'{output_dir}\optic.csv',index=False)
-        return queries
+        df.to_csv(f'{output_dir}\optic.csv',index=False)
+        return queries, raster_files
