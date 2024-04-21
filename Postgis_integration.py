@@ -3,8 +3,11 @@ import configparser
 
 
 def postgresql_connection(config_file):
+    # Read and get values from config file
     config = configparser.ConfigParser()
     config.read(config_file)
+
+    # Create DB conection
     conn = psycopg2.connect(
         database=config['postgresql_conn']['dbname'],
         user=config['postgresql_conn']['user'],
@@ -39,6 +42,6 @@ def execute_queries(conn, list_of_queries):
         conn.rollback()
 
     finally:
-        # Close the cursor and connection
+        # Close connection
         cur.close()
 
