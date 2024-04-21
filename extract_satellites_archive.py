@@ -3,6 +3,7 @@ import zipfile
 import uuid
 
 def extract_archives(zip_files_dir: str, extract_folder: str):
+    # walk over every archive
     for root, dirs, files in os.walk(zip_files_dir):
         for file in files:
             print(f"started extracting files from {file}\n{'-'*100}")
