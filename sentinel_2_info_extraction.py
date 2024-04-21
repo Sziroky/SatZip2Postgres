@@ -75,7 +75,7 @@ def extract_info_from_optic(optic_imagery_folder: str, output_dir: str):
 
                 query = (
                     f"INSERT INTO SENTINEL_02_INFO(scene_id, ACQUISITION_DATE, LEVEL, SPATIAL_RES, EPSG) VALUES('{image_id}','{acquisition_date}','{product_level}',{spt_res},{epsg});"
-                    f"INSERT INTO SENTINEL_02_RASTER(SCENE_ID, BAND, RASTER_PATH, SCENE ) VALUES('{image_id}','{band}','{path}',{raster_data});"
+                    f"INSERT INTO SENTINEL_02_RASTER(SCENE_ID, BAND, RASTER_PATH) VALUES('{image_id}','{band}','{path}');"
                     f"INSERT INTO SENTINEL_02_IMAGES(SCENE_ID, IMG_HEIGHT, IMG_WIDTH, IMG_PATH) VALUES ('{image_id}',{im_height},{im_width},'{path}');"
                     f"INSERT INTO SENTINEL_02_GEOMETRY(SCENE_ID, EPSG, BBOX) VALUES('{image_id}',{epsg},ST_GeometryFromText('{wkt}'))")
 
