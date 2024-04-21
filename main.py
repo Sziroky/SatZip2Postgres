@@ -25,16 +25,26 @@ def main():
     config_file = r'D:\Praca_magisterska\scripts\conf.ini'
 
     # GREETING
-    print("Welcome, some details here...\n\n")
+    print(f"\n{'*'*50}  SatZip2Postgres(GDOFO)   {'*'*50}\n\nDear User, This program can be used for extracting Satellite images from zip archives, "
+          "extract scenes information as .csv file \nand for creating of Postgis Database with Extracted and transform info.\n\n"
+          "NOTICE!!! For now this program extract good quality info from Sentinel-1 & Sentinel-2 Satellites\n"
+          "Program Still in development state. Glad You using it :D.\n"
+          )
+    #PATH DECLARING
+
+    # path_to_zip_archives = input("Type Full Path where your .zip archives are:")
+    # images = input("Type Full Path where you want your images to be unpacked:")
+    # output = input("Type Full Path where you want to store .csv files:")
+    # config_file = input("Type Full Path where you have your config.ini file with Postgis credentials:")
 
     # UNPACKING
-    question = input('Do you want to unpack satellite images? (Y/n):')
+    question = input("\n\nLet's start!\nDo you want to unpack satellite images? (Y/n):")
     answer = question.lower()
     if answer == 'y':
         print('Starting the Proces of Satellite Image Archive Information Extraction...\n\n')
         extract_archives(path_to_zip_archives, images)
         print(
-            f"Files extracted successfully into: {images}\n\nAcquisition of Files Information Started...\n{'v' * 100}\n")
+            f"Files extracted successfully into: {images}\n\n")
     elif answer == 'n':
         print('Skipping process of extracting archives\n')
 
@@ -77,7 +87,7 @@ def main():
         else:
             print("command not recognized!")
             pass
-        print(f'\nProcess finished. The output csv files is in {output}\n')
+        print(f'\nProcess finished. The output .csv files is in {output}\n')
     if answer == 'n':
         "Skipping process of collecting information's"
 
@@ -95,29 +105,27 @@ def main():
         print("command not recognized!")
         pass
 
+    print('Thanks for using SatZip2postgres (GDOFO)!')
     # AGGREGATING
-    question = input('\nDo you want to aggregate images per scene into one record (in csv file) ? (Y/n):')
-    answer = question.lower()
-    if answer == 'y':
-        for root, dirs, files in os.walk(output):
-            for file in files:
-                if file == 'optic.csv':
-                    s2_merge_images_per_scene(os.path.join(root, file))
-                elif file == 'sar.csv':
-                    s1_merge_images_per_scene(os.path.join(root, file))
-                else:
-                    print(
-                        f"Unrecognized csv file: {os.path.join(root, file)} in {output}")
-        print("\nThank You. Your Images and Information's are extracted.")
-    elif answer == 'n':
-        print("\nThank You. Your Images and Information's are extracted.")
+    # question = input('\nDo you want to aggregate images per scene into one record (in csv file) ? (Y/n):')
+    # answer = question.lower()
+    # if answer == 'y':
+    #     for root, dirs, files in os.walk(output):
+    #         for file in files:
+    #             if file == 'optic.csv':
+    #                 s2_merge_images_per_scene(os.path.join(root, file))
+    #             elif file == 'sar.csv':
+    #                 s1_merge_images_per_scene(os.path.join(root, file))
+    #             else:
+    #                 print(
+    #                     f"Unrecognized csv file: {os.path.join(root, file)} in {output}")
+    #     print("\nThank You. Your Images and Information's are extracted.")
+    # elif answer == 'n':
+    #     print("\nThank You. Your Images and Information's are extracted.")
 
     # END CONNECTION
     if conn is not None:
         conn.close()
-
-    print(s2rasters)
-
 
 
 if __name__ == "__main__":
