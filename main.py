@@ -18,11 +18,7 @@ class SatelliteError(Exception):
 
 def main():
     global conn, s2queries, s1queries, s2rasters, s1rasters
-    # PATHS
-    path_to_zip_archives = r'D:\Praca_magisterska\scripts\satellite_imagery_archives'
-    images = r'D:\Praca_magisterska\scripts\images'
-    output = r'D:\Praca_magisterska\scripts\output'
-    config_file = r'D:\Praca_magisterska\scripts\conf.ini'
+
 
     # GREETING
     print(f"\n{'*'*50}  SatZip2Postgres(GDOFO)   {'*'*50}\n\nDear User, This program can be used for extracting Satellite images from zip archives, "
@@ -32,10 +28,10 @@ def main():
           )
     #PATH DECLARING
 
-    # path_to_zip_archives = input("Type Full Path where your .zip archives are:")
-    # images = input("Type Full Path where you want your images to be unpacked:")
-    # output = input("Type Full Path where you want to store .csv files:")
-    # config_file = input("Type Full Path where you have your config.ini file with Postgis credentials:")
+    path_to_zip_archives = input("Type Full Path where your .zip archives are:")
+    images = input("Type Full Path where you want your images to be unpacked:")
+    output = input("Type Full Path where you want to store .csv files:")
+    config_file = input("Type Full Path where you have your config.ini file with Postgis credentials:")
 
     # UNPACKING
     question = input("\n\nLet's start!\nDo you want to unpack satellite images? (Y/n):")
