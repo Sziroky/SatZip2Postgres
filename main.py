@@ -101,24 +101,24 @@ def main():
         print("command not recognized!")
         pass
 
-    print('Thanks for using SatZip2postgres (GDOFO)!')
-    # AGGREGATING
-    # question = input('\nDo you want to aggregate images per scene into one record (in csv file) ? (Y/n):')
-    # answer = question.lower()
-    # if answer == 'y':
-    #     for root, dirs, files in os.walk(output):
-    #         for file in files:
-    #             if file == 'optic.csv':
-    #                 s2_merge_images_per_scene(os.path.join(root, file))
-    #             elif file == 'sar.csv':
-    #                 s1_merge_images_per_scene(os.path.join(root, file))
-    #             else:
-    #                 print(
-    #                     f"Unrecognized csv file: {os.path.join(root, file)} in {output}")
-    #     print("\nThank You. Your Images and Information's are extracted.")
-    # elif answer == 'n':
-    #     print("\nThank You. Your Images and Information's are extracted.")
 
+    # AGGREGATING
+    question = input('\nDo you want to aggregate images per scene into one record (in csv file) ? (Y/n):')
+    answer = question.lower()
+    if answer == 'y':
+        for root, dirs, files in os.walk(output):
+            for file in files:
+                if file == 'optic.csv':
+                    s2_merge_images_per_scene(os.path.join(root, file))
+                elif file == 'sar.csv':
+                    s1_merge_images_per_scene(os.path.join(root, file))
+                else:
+                    print(
+                        f"Unrecognized csv file: {os.path.join(root, file)} in {output}")
+        print("\nThank You. Your Images and Information's are extracted.")
+    elif answer == 'n':
+        print("\nThank You. Your Images and Information's are extracted.")
+    print('\nThanks for using SatZip2postgres (GDOFO)!')
     # END CONNECTION
     if conn is not None:
         conn.close()
